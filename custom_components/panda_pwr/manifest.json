@@ -7,5 +7,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/juanillo62gm/HA-Panda-PWR/issues",
   "requirements": ["aiohttp"],
-  "version": "1.0.5"
+  "version": "1.0.6"
 }
