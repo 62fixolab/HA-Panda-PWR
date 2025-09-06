@@ -1,10 +1,10 @@
 # 🎉 Sponsors
 
 ## 🛴 Scooter Tools - App
-[![Banner - Scooter Tools App](https://github.com/juanillo62gm/juanillo62gm/raw/master/assets/banner-scooter-tools.png)](https://scootertools.app)
+[![Banner - Scooter Tools App](https://github.com/62fixolab/juanillo62gm/raw/master/assets/banner-scooter-tools.png)](https://scootertools.app)
 
 ## 📊 AdMate - App
-[![Banner - AdMate App](https://github.com/juanillo62gm/juanillo62gm/raw/master/assets/banner-admate.png)](https://scootertools.app)
+[![Banner - AdMate App](https://github.com/62fixolab/juanillo62gm/raw/master/assets/banner-admate.png)](https://scootertools.app)
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
@@ -52,7 +52,7 @@ Integrate your [Panda PWR from BIGTREETECH (BTT) | BIQU][pandapwrwiki] with Home
 
 3. Add the repository URL to the **Custom Repository** field:
     ```
-    https://github.com/juanillo62gm/HA-Panda-PWR
+    https://github.com/62fixolab/HA-Panda-PWR
     ```
 
 4. Select **Integration** as the repository type and click **Add**.
@@ -101,9 +101,9 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 [buymecoffee]: https://paypal.me/juanillo62gm
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
 [commits-shield]: https://img.shields.io/github/commit-activity/y/juanillo62gm/HA-Panda-PWR.svg?style=for-the-badge
-[commits]: https://github.com/juanillo62gm/HA-Panda-PWR/commits/main
+[commits]: https://github.com/62fixolab/HA-Panda-PWR/commits/main
 [license-shield]: https://img.shields.io/github/license/juanillo62gm/HA-Panda-PWR.svg?style=for-the-badge
-[maintainer]: https://github.com/juanillo62gm
+[maintainer]: https://github.com/62fixolab
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%20%40juanillo62gm-blue.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/juanillo62gm/HA-Panda-PWR.svg?style=for-the-badge
-[releases]: https://github.com/juanillo62gm/HA-Panda-PWR/releases
+[releases]: https://github.com/62fixolab/HA-Panda-PWR/releases

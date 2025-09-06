@@ -3,9 +3,9 @@
   "name": "Panda PWR",
   "codeowners": ["@juanillo62gm"],
   "config_flow": true,
-  "documentation": "https://github.com/juanillo62gm/HA-Panda-PWR",
+  "documentation": "https://github.com/62fixolab/HA-Panda-PWR",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/juanillo62gm/HA-Panda-PWR/issues",
+  "issue_tracker": "https://github.com/62fixolab/HA-Panda-PWR/issues",
   "requirements": ["aiohttp"],
   "version": "1.0.6"
 }
