@@ -3,6 +3,8 @@
 import aiohttp
 import async_timeout
 
+from .const import MAX_COUNTDOWN_SECONDS
+
 HTTP_OK = 200
 
 
@@ -108,7 +110,7 @@ class PandaPWRApi:
 
     async def set_countdown_timer(self, seconds: int) -> bool:
         """Set countdown timer in seconds using RAW payload. Max 86400 seconds."""
-        if seconds < 0 or seconds > 86400:
+        if seconds < 0 or seconds > MAX_COUNTDOWN_SECONDS:
             return False
 
         payload = f"countdown_val={seconds}"
