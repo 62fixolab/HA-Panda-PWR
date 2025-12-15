@@ -41,6 +41,8 @@ Integrate your [Panda PWR from BIGTREETECH (BTT) | BIQU][pandapwrwiki] with Home
 | `sensor`        | `EnergyUsageSensor`     | Tracks energy usage (in kilowatt-hours).          |
 | `binary_sensor` | `PowerStateBinarySensor`| Indicates if the power is on or off.              |
 | `binary_sensor` | `UsbStateBinarySensor`  | Indicates if the USB port is on or off.           |
+| `button`        | `Reset Energy Usage`    | Resets the energy usage statistics.               |
+| `button`        | `Factory Reset`         | Performs a factory reset on the device.           |
 
 ## **Installation**
 
