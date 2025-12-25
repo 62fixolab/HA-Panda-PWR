@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from .api import PandaPWRApi
 from .const import DOMAIN
 
-PLATFORMS = [Platform.BINARY_SENSOR, Platform.SWITCH, Platform.SENSOR, Platform.BUTTON]
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.SWITCH, Platform.SENSOR, Platform.BUTTON]#, Platform.NUMBER
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
