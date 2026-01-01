@@ -4,11 +4,10 @@ from typing import Any
 
 from homeassistant.components.number import NumberEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import MAX_COUNTDOWN_SECONDS, DOMAIN
+from .const import DOMAIN, MAX_COUNTDOWN_SECONDS
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -18,8 +17,10 @@ async def async_setup_entry(
     device_id = f"pandapwr_{entry.data['ip_address']}"
     async_add_entities(
         [PandaPWRCountdownTimer(api, entry, device_id)],
-        update_before_add=True
+        update_before_add=True,
     )
+
+
 class PandaPWRNumber(NumberEntity):
     """Base class for PandaPWR numbers."""
 
@@ -64,15 +65,15 @@ class PandaPWRNumber(NumberEntity):
         raise NotImplementedError
 
 class PandaPWRCountdownTimer(PandaPWRNumber):
-    """PandaPWRCountdownTimer"""
+    """PandaPWRCountdownTimer."""
 
     def __init__(self, api: Any, entry: ConfigEntry, device_id: str) -> None:
         """Initialize the number."""
         number_info = {
             "name": "Countdown Time",
             "unique_id_suffix": "countdown_time",
-            "native_unit_of_measurement" : "s",
-            "device_class" : "DURATION"
+            "native_unit_of_measurement": "s",
+            "device_class": "DURATION",
         }
         super().__init__(api, entry, device_id, number_info)
         self._attr_native_max_value = MAX_COUNTDOWN_SECONDS
@@ -81,7 +82,7 @@ class PandaPWRCountdownTimer(PandaPWRNumber):
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""
         await self._api.set_countdown_timer(int(value))
-    
+
     def process_data(self, data: dict) -> None:
         """Process data received from the API."""
         self._attr_native_value = data.get("countdown")
