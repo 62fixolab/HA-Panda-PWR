@@ -40,7 +40,7 @@ class PandaPWRNumber(NumberEntity):
         self._attr_native_value = None
         self._attr_native_unit_of_measurement = number_info.get(
             "native_unit_of_measurement"
-            )
+        )
         self._attr_device_class = number_info.get("device_class")
         self._attr_state_class = number_info.get("state_class")
         self._device_id = device_id
@@ -64,6 +64,7 @@ class PandaPWRNumber(NumberEntity):
     def process_data(self, data: dict) -> None:
         """Process data received from the API."""
         raise NotImplementedError
+
 
 class PandaPWRCountdownTimer(PandaPWRNumber):
     """PandaPWRCountdownTimer."""
