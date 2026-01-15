@@ -1,7 +1,5 @@
 """API client for interacting with PandaPWR devices."""
 
-import asyncio
-
 import aiohttp
 import async_timeout
 
@@ -26,7 +24,7 @@ class PandaPWRApi:
                 self._session.get(f"{self._base_url}/update_ele_data") as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
 
     async def get_data(self) -> dict:
@@ -37,7 +35,7 @@ class PandaPWRApi:
                 self._session.get(f"{self._base_url}/update_ele_data") as response,
             ):
                 return await response.json()
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return {}
 
     async def set_power_state(self, state: int) -> bool:
@@ -49,7 +47,7 @@ class PandaPWRApi:
                 self._session.post(f"{self._base_url}/set", data=payload) as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
 
     async def set_usb_state(self, state: int) -> bool:
@@ -61,7 +59,7 @@ class PandaPWRApi:
                 self._session.post(f"{self._base_url}/set", data=payload) as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
 
     async def do_factory_reset(self) -> bool:
@@ -73,7 +71,7 @@ class PandaPWRApi:
                 self._session.post(f"{self._base_url}/set", data=payload) as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
 
     async def reset_energy_usage(self) -> bool:
@@ -85,7 +83,7 @@ class PandaPWRApi:
                 self._session.post(f"{self._base_url}/set", data=payload) as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
 
     async def set_countdown_state(self, state: int) -> bool:
@@ -107,7 +105,7 @@ class PandaPWRApi:
                 self._session.post(f"{self._base_url}/set", data=payload) as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
 
     async def set_countdown_timer(self, seconds: int) -> bool:
@@ -122,7 +120,7 @@ class PandaPWRApi:
                 self._session.post(f"{self._base_url}/set", data=payload) as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
 
     async def set_auto_poweroff(self, state: int) -> bool:
@@ -134,7 +132,7 @@ class PandaPWRApi:
                 self._session.post(f"{self._base_url}/set", data=payload) as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
 
     async def send_multi_command(self, commands: dict) -> bool:
@@ -146,5 +144,5 @@ class PandaPWRApi:
                 self._session.post(f"{self._base_url}/set", data=payload) as response,
             ):
                 return response.status == HTTP_OK
-        except (aiohttp.ClientError, asyncio.TimeoutError):
+        except (aiohttp.ClientError, TimeoutError):
             return False
