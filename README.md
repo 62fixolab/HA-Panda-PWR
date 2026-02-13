@@ -7,7 +7,7 @@
 [![Banner - Scooter Tools App](https://github.com/62fixolab/juanillo62gm/raw/master/assets/banner-scooter-tools.png)](https://scootertools.app)
 
 ## AdMate App
-[![Banner - AdMate App](https://github.com/62fixolab/juanillo62gm/raw/master/assets/banner-admate.png)](https://scootertools.app)
+[![Banner - AdMate App](https://github.com/62fixolab/juanillo62gm/raw/master/assets/banner-admate.png)](https://admate.dev)
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
