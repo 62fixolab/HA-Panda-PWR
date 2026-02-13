@@ -1,5 +1,5 @@
 {
-  "name": "juanillo62gm/panda_pwr",
+  "name": "62fixolab/panda_pwr",
   "image": "mcr.microsoft.com/devcontainers/python:3.12",
   "postCreateCommand": "scripts/setup.sh",
   "forwardPorts": [8123],

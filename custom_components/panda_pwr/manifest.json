@@ -1,7 +1,7 @@
 {
   "domain": "panda_pwr",
   "name": "Panda PWR",
-  "codeowners": ["@juanillo62gm"],
+  "codeowners": ["@62fixolab"],
   "config_flow": true,
   "documentation": "https://github.com/62fixolab/HA-Panda-PWR",
   "iot_class": "local_polling",
