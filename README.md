@@ -1,3 +1,13 @@
+![Installations](https://img.shields.io/badge/dynamic/json?color=41BDF5&logo=home-assistant&label=Installations&suffix=%20installs&cacheSeconds=15600&style=for-the-badge&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.panda_pwr.total)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
+
+[![GitHub Release][releases-shield]][releases]
+[![GitHub Activity][commits-shield]][commits]
+[![License][license-shield]](LICENSE)
+
+[![Project Maintenance][maintenance-shield]][maintainer]
+[![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
+
 # 🎉 Sponsors
 
 ## Printer Tools App
@@ -8,15 +18,6 @@
 
 ## AdMate App
 [![Banner - AdMate App](https://github.com/62fixolab/62fixolab/raw/master/assets/banner-admate.png)](https://admate.dev)
-
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
-
-[![GitHub Release][releases-shield]][releases]
-[![GitHub Activity][commits-shield]][commits]
-[![License][license-shield]](LICENSE)
-
-[![Project Maintenance][maintenance-shield]][maintainer]
-[![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
 # Panda PWR
 
@@ -103,7 +104,7 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 ***
 
 [pandapwrwiki]: https://bttwiki.com/Panda%20PWR.html
-[buymecoffee]: https://paypal.me/62fixolab
+[buymecoffee]: https://paypal.me/juanillo62gm
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
 [commits-shield]: https://img.shields.io/github/commit-activity/y/62fixolab/HA-Panda-PWR.svg?style=for-the-badge
 [commits]: https://github.com/62fixolab/HA-Panda-PWR/commits/main
