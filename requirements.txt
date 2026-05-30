@@ -1,4 +1,4 @@
 colorlog==6.10.1
 homeassistant==2024.11.1
-pip>=26.1
+pip>=26.1https://github.com/62fixolab/HA-Panda-PWR/pull/106/conflict?name=requirements.txt&ancestor_oid=fb25410b56ed9ae1c78dd2841882a537a619dd18&base_oid=2007949579628bfa7e2f1d8b1d20365522c5a2a0&head_oid=94d2144479588e57471fbc4115f6e0a10eb6962c
 ruff==0.15.14
