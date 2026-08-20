@@ -1,3 +1,4 @@
+# Copyright (c) 2026 FixoLab
 """PandaPWR integration for Home Assistant."""
 
 from homeassistant.config_entries import ConfigEntry

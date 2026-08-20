@@ -1,3 +1,4 @@
+# Copyright (c) 2026 FixoLab
 """Number platform for PandaPWR integration in Home Assistant."""
 
 from typing import Any

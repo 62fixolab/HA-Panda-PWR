@@ -1,3 +1,4 @@
+# Copyright (c) 2026 FixoLab
 """Constants for the panda_pwr integration."""
 
 DOMAIN = "panda_pwr"
