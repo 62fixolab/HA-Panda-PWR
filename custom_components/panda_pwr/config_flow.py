@@ -1,3 +1,4 @@
+# Copyright (c) 2026 FixoLab
 """Config flow for PandaPWR integration in Home Assistant."""
 
 import voluptuous as vol

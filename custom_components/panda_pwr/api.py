@@ -1,3 +1,4 @@
+# Copyright (c) 2026 FixoLab
 """API client for interacting with PandaPWR devices."""
 
 import aiohttp
