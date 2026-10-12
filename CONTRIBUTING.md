@@ -15,8 +15,8 @@ Pull requests are the best way to propose changes to the codebase.
 
 1. Fork the repo and create your branch from `main`.
 2. If you've changed something, update the documentation.
-3. Make sure your code lints (using `scripts/lint`).
-4. Test you contribution.
+3. Make sure your code lints (using `scripts/lint.sh`).
+4. Run the tests (using `scripts/test.sh`) and add tests for your change.
 5. Issue that pull request!
 
 ## Any contributions you make will be under the MIT Software License
@@ -44,7 +44,7 @@ People *love* thorough bug reports. I'm not even kidding.
 
 ## Use a Consistent Coding Style
 
-Use [black](https://github.com/ambv/black) to make sure the code follows the style.
+Use [Ruff](https://docs.astral.sh/ruff/) to make sure the code follows the style (`scripts/lint.sh`).
 
 ## Test your code modification
 
@@ -55,6 +55,10 @@ if you use Visual Studio Code. With this container you will have a stand alone
 Home Assistant instance running and already configured with the included
 [`configuration.yaml`](./config/configuration.yaml)
 file.
+
+The tests in [`tests/`](./tests) run Home Assistant against a simulated Panda PWR that can go offline or send broken replies.
+Install their requirements with `scripts/setup.sh` and run them with `scripts/test.sh`.
+CI runs them on the oldest supported Home Assistant release (`tests/requirements_min.txt`) and on the latest one (`requirements_test.txt`).
 
 ## License
 

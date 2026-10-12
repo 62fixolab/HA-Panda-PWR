@@ -32,21 +32,32 @@ Integrate your [Panda PWR from BIGTREETECH (BTT) | BIQU][pandapwrwiki] with Home
 
 **This integration will set up the following platforms.**
 
-| Platform        | Entity                  | Description                                       |
-| --------------- | ----------------------- | ------------------------------------------------- |
-| `switch`        | `PowerSwitch`           | Controls the power state of the PandaPWR device.  |
-| `switch`        | `UsbSwitch`             | Controls the USB state of the PandaPWR device.    |
-| `sensor`        | `CountdownStateSensor`  | Shows the countdown state of the device.          |
-| `sensor`        | `AutoPoweroffSensor`    | Displays the auto power-off state.                |
-| `sensor`        | `CountdownSensor`       | Shows the countdown timer in seconds.             |
-| `sensor`        | `VoltageSensor`         | Measures the voltage (in volts).                  |
-| `sensor`        | `CurrentSensor`         | Measures the current (in amperes).                |
-| `sensor`        | `PowerSensor`           | Measures the power consumption (in watts).        |
-| `sensor`        | `EnergyUsageSensor`     | Tracks energy usage (in kilowatt-hours).          |
-| `binary_sensor` | `PowerStateBinarySensor`| Indicates if the power is on or off.              |
-| `binary_sensor` | `UsbStateBinarySensor`  | Indicates if the USB port is on or off.           |
-| `button`        | `Reset Energy Usage`    | Resets the energy usage statistics.               |
-| `button`        | `Factory Reset`         | Performs a factory reset on the device.           |
+| Platform        | Entity                    | Description                                                                 |
+| --------------- | ------------------------- | --------------------------------------------------------------------------- |
+| `switch`        | Power switch              | Turns the mains output on or off.                                           |
+| `switch`        | USB switch                | Turns the USB output on or off.                                             |
+| `switch`        | Shutdown timer            | Starts or stops the countdown that cuts the mains output when it ends.      |
+| `switch`        | Auto power-off            | Firmware flag the countdown needs; follows Panda Touch when bound to one.   |
+| `number`        | Countdown time            | Shutdown timer duration in seconds (up to 24 h); shows what is left while it runs. |
+| `button`        | Pause shutdown timer      | Pauses a running shutdown timer.                                            |
+| `button`        | Resume shutdown timer     | Resumes a paused shutdown timer.                                            |
+| `button`        | Reset energy usage        | Resets the energy counter. **Disabled by default.**                        |
+| `button`        | Factory reset             | Factory resets the device; it leaves your Wi-Fi. **Disabled by default.**   |
+| `sensor`        | Voltage                   | Mains voltage (V).                                                          |
+| `sensor`        | Current                   | Current drawn (A).                                                          |
+| `sensor`        | Power                     | Power drawn (W).                                                            |
+| `sensor`        | Energy usage              | Energy counter (kWh), ready for the Energy dashboard.                       |
+| `sensor`        | Countdown                 | Seconds left on the shutdown timer.                                         |
+| `sensor`        | Countdown state           | Stopped, running, paused or paused by Panda Touch.                          |
+| `sensor`        | Auto power-off state      | Raw auto power-off flag (0 or 1).                                           |
+| `binary_sensor` | Power state               | Whether the mains output is on.                                             |
+| `binary_sensor` | USB state                 | Whether the USB output is on.                                               |
+
+The integration polls the device once every 30 seconds and shares that reading with every entity.
+When the Panda PWR is unreachable, its entities show as unavailable instead of reporting zero.
+
+> [!TIP]
+> The two destructive buttons are disabled by default. Enable them from the entity settings if you need them.
 
 ## **Installation**
 
@@ -93,7 +104,16 @@ Integrate your [Panda PWR from BIGTREETECH (BTT) | BIQU][pandapwrwiki] with Home
 
 ## Configuration is done in the UI
 
-<!---->
+1. Reserve the Panda PWR's IP address in your router so it does not change.
+2. Add the **Panda PWR** integration and enter that IP address.
+
+If the IP address changes anyway, open the integration, choose **Reconfigure** and enter the new one.
+Entities and their history are kept. Adding the same device again at its new address also updates it.
+
+## Diagnostics
+
+From the device page, **Download diagnostics** saves the latest reading and firmware details to attach to an issue.
+IP addresses, the device's access point name and its password are removed from the file.
 
 ## Assets available [here](https://github.com/home-assistant/brands/tree/master/custom_integrations/panda_pwr)
 
