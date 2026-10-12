@@ -41,8 +41,8 @@ Integrate your [Panda PWR from BIGTREETECH (BTT) | BIQU][pandapwrwiki] with Home
 | `number`        | Countdown time            | Shutdown timer duration in seconds (up to 24 h); shows what is left while it runs. |
 | `button`        | Pause shutdown timer      | Pauses a running shutdown timer.                                            |
 | `button`        | Resume shutdown timer     | Resumes a paused shutdown timer.                                            |
-| `button`        | Reset energy usage        | Resets the energy counter. **Disabled by default.**                        |
-| `button`        | Factory reset             | Factory resets the device; it leaves your Wi-Fi. **Disabled by default.**   |
+| `button`        | Reset energy usage        | Resets the energy counter. **Disabled by default; press twice to confirm.** |
+| `button`        | Factory reset             | Factory resets the device; it leaves your Wi-Fi. **Disabled by default; press twice to confirm.** |
 | `sensor`        | Voltage                   | Mains voltage (V).                                                          |
 | `sensor`        | Current                   | Current drawn (A).                                                          |
 | `sensor`        | Power                     | Power drawn (W).                                                            |
@@ -58,6 +58,9 @@ When the Panda PWR is unreachable, its entities show as unavailable instead of r
 
 > [!TIP]
 > The two destructive buttons are disabled by default. Enable them from the entity settings if you need them.
+>
+> Even when enabled, they ask for confirmation: the first press only shows "Press … again within 10 seconds to confirm",
+> and the action runs on a second press within those 10 seconds. A single press from an automation or script never triggers them.
 
 ## **Installation**
 
