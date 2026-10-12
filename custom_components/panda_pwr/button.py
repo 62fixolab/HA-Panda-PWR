@@ -1,64 +1,83 @@
 # Copyright (c) 2026 FixoLab
 """Button platform for PandaPWR integration in Home Assistant."""
 
-from homeassistant.components.button import ButtonEntity
-from homeassistant.config_entries import ConfigEntry
+from collections.abc import Awaitable, Callable
+from dataclasses import dataclass, field
+
+from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
-from .coordinator import PandaPWRCoordinator, PandaPWREntity
+from .api import PandaPWRApi
+from .const import COUNTDOWN_PAUSED, COUNTDOWN_RUNNING
+from .coordinator import PandaPWRConfigEntry, PandaPWRCoordinator, PandaPWREntity
+
+
+@dataclass(frozen=True, kw_only=True)
+class PandaPWRButtonDescription(ButtonEntityDescription):
+    """Button sending one command; `changes` is the state it leaves behind."""
+
+    press_fn: Callable[[PandaPWRApi], Awaitable[bool]]
+    changes: dict = field(default_factory=dict)
+
+
+BUTTONS = (
+    PandaPWRButtonDescription(
+        key="pause_shutdown_timer",
+        press_fn=lambda api: api.pause_countdown(),
+        changes={"countdown_state": COUNTDOWN_PAUSED, "auto_poweroff": 1},
+    ),
+    PandaPWRButtonDescription(
+        key="resume_shutdown_timer",
+        press_fn=lambda api: api.resume_countdown(),
+        changes={"countdown_state": COUNTDOWN_RUNNING, "auto_poweroff": 1},
+    ),
+    # Destructive: disabled by default so a stray click cannot trigger them.
+    PandaPWRButtonDescription(
+        key="energy_usage_reset_button",
+        press_fn=lambda api: api.reset_energy_usage(),
+        changes={"ele": 0.0},
+        entity_category=EntityCategory.CONFIG,
+        entity_registry_enabled_default=False,
+    ),
+    PandaPWRButtonDescription(
+        key="factory_reset_button",
+        press_fn=lambda api: api.do_factory_reset(),
+        entity_category=EntityCategory.CONFIG,
+        entity_registry_enabled_default=False,
+    ),
+)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,  # noqa: ARG001
+    entry: PandaPWRConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up button platform for PandaPWR."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
-        [EnergyUsageResetButton(coordinator), FactoryResetButton(coordinator)]
+        PandaPWRButton(entry.runtime_data, description) for description in BUTTONS
     )
 
 
 class PandaPWRButton(PandaPWREntity, ButtonEntity):
-    """Base class for PandaPWR buttons."""
+    """Button sending one command to the device."""
 
-    def __init__(self, coordinator: PandaPWRCoordinator) -> None:
+    entity_description: PandaPWRButtonDescription
+
+    def __init__(
+        self, coordinator: PandaPWRCoordinator, description: PandaPWRButtonDescription
+    ) -> None:
         """Initialize the button."""
-        super().__init__(coordinator)
-        self._attr_entity_category = EntityCategory.CONFIG
-
-
-class EnergyUsageResetButton(PandaPWRButton):
-    """Button to reset energy usage statistics."""
-
-    def __init__(self, coordinator: PandaPWRCoordinator) -> None:
-        """Initialize the energy usage reset button."""
-        super().__init__(coordinator)
-        self._attr_name = "Reset Energy Usage"
-        self._attr_unique_id = f"{self._device_id}_energy_usage_reset_button"
+        super().__init__(coordinator, description.key)
+        self.entity_description = description
 
     async def async_press(self) -> None:
-        """Reset the energy usage statistics."""
-        if not await self._api.reset_energy_usage():
-            msg = "Panda PWR did not accept the energy usage reset"
+        """Send the command and show its effect."""
+        if not await self.entity_description.press_fn(self._api):
+            msg = f"Panda PWR did not accept {self.name}"
             raise HomeAssistantError(msg)
-        self.coordinator.async_apply_write({"ele": 0})
-
-
-class FactoryResetButton(PandaPWRButton):
-    """Button to perform a factory reset."""
-
-    def __init__(self, coordinator: PandaPWRCoordinator) -> None:
-        """Initialize the factory reset button."""
-        super().__init__(coordinator)
-        self._attr_name = "Factory Reset"
-        self._attr_unique_id = f"{self._device_id}_factory_reset_button"
-
-    async def async_press(self) -> None:
-        """Reset the factory settings."""
-        if not await self._api.do_factory_reset():
-            msg = "Panda PWR did not accept the factory reset"
-            raise HomeAssistantError(msg)
+        if self.entity_description.changes:
+            self.coordinator.async_apply_write(self.entity_description.changes)
