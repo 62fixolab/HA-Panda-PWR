@@ -1,0 +1,8 @@
+# Oldest Home Assistant release supported (matches "homeassistant" in hacs.json).
+# Excluded from Dependabot (see .github/dependabot.yml): change these pins by hand.
+homeassistant==2024.11.1
+pytest-homeassistant-custom-component==0.13.182
+# Releases newer than the ones Home Assistant 2024.11 shipped with break its tests:
+# josepy 2 removed an API hass-nabucasa imports, pycares 4.5+ starts a thread.
+josepy<2
+pycares==4.4.0

@@ -2,18 +2,110 @@
   "config": {
     "step": {
       "user": {
-        "title": "Configurar Test Integration",
-        "description": "Introduce la dirección IP del dispositivo",
+        "title": "Panda PWR",
+        "description": "Introduce la dirección IP de tu Panda PWR. Resérvala en el router para que no cambie.",
         "data": {
-          "ip_address": "Dirección IP del dispositivo"
+          "ip_address": "Dirección IP"
+        },
+        "data_description": {
+          "ip_address": "La dirección que aparece en la web del Panda PWR, por ejemplo 192.168.1.50."
+        }
+      },
+      "reconfigure": {
+        "title": "Cambiar dirección IP",
+        "description": "Apunta la integración a la nueva dirección IP del mismo Panda PWR. Se conservan las entidades y su historial.",
+        "data": {
+          "ip_address": "Dirección IP"
+        },
+        "data_description": {
+          "ip_address": "La dirección que aparece en la web del Panda PWR, por ejemplo 192.168.1.50."
         }
       }
     },
     "error": {
-      "cannot_connect": "No se pudo conectar al dispositivo"
+      "cannot_connect": "No se pudo conectar con el Panda PWR. Comprueba la dirección IP y que esté en la misma red."
     },
     "abort": {
-      "single_instance_allowed": "Solo se permite una instancia"
+      "already_configured": "Este Panda PWR ya está configurado.",
+      "wrong_device": "Esa dirección IP pertenece a otro Panda PWR.",
+      "reconfigure_successful": "Se ha actualizado la dirección IP."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "power_state": {
+        "name": "Estado de la corriente"
+      },
+      "usb_state": {
+        "name": "Estado del USB"
+      }
+    },
+    "button": {
+      "pause_shutdown_timer": {
+        "name": "Pausar apagado programado"
+      },
+      "resume_shutdown_timer": {
+        "name": "Reanudar apagado programado"
+      },
+      "energy_usage_reset_button": {
+        "name": "Reiniciar consumo de energía"
+      },
+      "factory_reset_button": {
+        "name": "Restablecer de fábrica"
+      }
+    },
+    "number": {
+      "countdown_time": {
+        "name": "Tiempo de cuenta atrás"
+      }
+    },
+    "sensor": {
+      "countdown_state": {
+        "name": "Estado de la cuenta atrás",
+        "state": {
+          "stopped": "Detenida",
+          "running": "En marcha",
+          "paused_by_panda_touch": "Pausada por Panda Touch",
+          "paused": "Pausada"
+        }
+      },
+      "auto_poweroff": {
+        "name": "Estado del apagado automático"
+      },
+      "countdown": {
+        "name": "Cuenta atrás"
+      },
+      "voltage": {
+        "name": "Tensión"
+      },
+      "current": {
+        "name": "Corriente"
+      },
+      "power": {
+        "name": "Potencia"
+      },
+      "energy_usage": {
+        "name": "Consumo de energía"
+      }
+    },
+    "switch": {
+      "power_switch": {
+        "name": "Interruptor de corriente"
+      },
+      "usb_switch": {
+        "name": "Interruptor USB"
+      },
+      "shutdown_timer": {
+        "name": "Apagado programado"
+      },
+      "auto_poweroff_switch": {
+        "name": "Apagado automático"
+      }
+    }
+  },
+  "exceptions": {
+    "confirm_press": {
+      "message": "Pulsa {name} otra vez antes de {seconds} segundos para confirmar."
     }
   }
 }

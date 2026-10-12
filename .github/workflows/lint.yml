@@ -4,14 +4,16 @@ on:
   push:
     branches:
       - "main"
+      - "develop"
   pull_request:
     branches:
       - "main"
+      - "develop"
 
 jobs:
   ruff:
     name: "Ruff"
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
     steps:
         - name: "Checkout the repository"
           uses: "actions/checkout@v7.0.1"
@@ -19,7 +21,7 @@ jobs:
         - name: "Set up Python"
           uses: actions/setup-python@v7.0.0
           with:
-            python-version: "3.12"
+            python-version: "3.14"
             cache: "pip"
 
         - name: "Install requirements"

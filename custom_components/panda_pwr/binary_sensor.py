@@ -5,63 +5,42 @@ from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import (
-    AddEntitiesCallback,
-)
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
-from .coordinator import PandaPWRCoordinator, PandaPWREntity
+from .coordinator import PandaPWRConfigEntry, PandaPWRCoordinator, PandaPWREntity
+
+# translation key / unique ID suffix -> field of the device reply
+BINARY_SENSORS = {"power_state": "power_state", "usb_state": "usb_state"}
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,  # noqa: ARG001
+    entry: PandaPWRConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the binary sensor platform from a config entry."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
-        [PowerStateBinarySensor(coordinator), UsbStateBinarySensor(coordinator)]
+        PandaPWRBinarySensor(entry.runtime_data, key, data_key)
+        for key, data_key in BINARY_SENSORS.items()
     )
 
 
 class PandaPWRBinarySensor(PandaPWREntity, BinarySensorEntity):
-    """Base class for a PandaPWR binary sensor."""
+    """Binary sensor reporting whether an output is on."""
 
-    _data_key: str
+    _attr_device_class = BinarySensorDeviceClass.POWER
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
-    def __init__(self, coordinator: PandaPWRCoordinator) -> None:
+    def __init__(
+        self, coordinator: PandaPWRCoordinator, key: str, data_key: str
+    ) -> None:
         """Initialize the binary sensor."""
-        super().__init__(coordinator)
-        self._attr_device_class = BinarySensorDeviceClass.POWER
-        self._attr_entity_category = EntityCategory.DIAGNOSTIC
+        super().__init__(coordinator, key)
+        self._data_key = data_key
 
     @property
     def is_on(self) -> bool:
         """Return whether the output is on according to the last poll."""
         return self.coordinator.data.get(self._data_key) == 1
-
-
-class PowerStateBinarySensor(PandaPWRBinarySensor):
-    """Binary sensor for monitoring the power state of a PandaPWR device."""
-
-    _data_key = "power_state"
-
-    def __init__(self, coordinator: PandaPWRCoordinator) -> None:
-        """Initialize the PowerStateBinarySensor."""
-        super().__init__(coordinator)
-        self._attr_name = "Power State"
-        self._attr_unique_id = f"{self._device_id}_power_state"
-
-
-class UsbStateBinarySensor(PandaPWRBinarySensor):
-    """Binary sensor for monitoring the USB state of a PandaPWR device."""
-
-    _data_key = "usb_state"
-
-    def __init__(self, coordinator: PandaPWRCoordinator) -> None:
-        """Initialize the UsbStateBinarySensor."""
-        super().__init__(coordinator)
-        self._attr_name = "USB State"
-        self._attr_unique_id = f"{self._device_id}_usb_state"

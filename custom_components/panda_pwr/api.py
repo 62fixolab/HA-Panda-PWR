@@ -2,17 +2,45 @@
 """API client for interacting with PandaPWR devices."""
 
 import asyncio
+import contextlib
 
 import aiohttp
 
-from .const import MAX_COUNTDOWN_SECONDS
+from .const import (
+    COUNTDOWN_PAUSED,
+    COUNTDOWN_RUNNING,
+    COUNTDOWN_STOPPED,
+    MAX_COUNTDOWN_SECONDS,
+)
 
 HTTP_OK = 200
 REQUEST_TIMEOUT = 10
 
+# The firmware reports some of these as strings ("0"), others as numbers.
+INT_FIELDS = (
+    "power_state",
+    "usb_state",
+    "countdown",
+    "countdown_state",
+    "auto_poweroff",
+)
+FLOAT_FIELDS = ("voltage", "current", "power", "ele")
+
 
 class PandaPWRError(Exception):
     """Raised when the device cannot be reached or returns an invalid reply."""
+
+
+def _normalize(data: dict) -> dict:
+    """Convert the numeric fields the firmware sends as text into numbers."""
+    for fields, cast in ((INT_FIELDS, int), (FLOAT_FIELDS, float)):
+        for key in fields:
+            if key in data:
+                with contextlib.suppress(TypeError, ValueError):
+                    data[key] = (
+                        cast(float(data[key])) if cast is int else cast(data[key])
+                    )
+    return data
 
 
 class PandaPWRApi:
@@ -31,12 +59,12 @@ class PandaPWRApi:
             return False
         return True
 
-    async def get_data(self) -> dict:
-        """Fetch data from the device, raising PandaPWRError on any failure."""
+    async def _get_json(self, path: str) -> dict:
+        """GET a JSON object from the device, raising PandaPWRError on any failure."""
         try:
             async with (
                 asyncio.timeout(REQUEST_TIMEOUT),
-                self._session.get(f"{self._base_url}/update_ele_data") as response,
+                self._session.get(f"{self._base_url}{path}") as response,
             ):
                 if response.status != HTTP_OK:
                     msg = f"Unexpected HTTP status {response.status}"
@@ -48,6 +76,19 @@ class PandaPWRApi:
             msg = f"Unexpected payload type {type(data).__name__}"
             raise PandaPWRError(msg)
         return data
+
+    async def get_data(self) -> dict:
+        """Fetch the electrical data and output states."""
+        return _normalize(await self._get_json("/update_ele_data"))
+
+    async def get_state(self) -> dict:
+        """
+        Fetch the device information: firmware, access point and station IP.
+
+        The access point SSID is unique per device; the reply also contains the
+        access point password, so never log or expose it unredacted.
+        """
+        return await self._get_json("/get_state")
 
     async def _post(self, payload: str) -> bool:
         """Send a RAW payload to the device and report whether it was accepted."""
@@ -106,4 +147,35 @@ class PandaPWRApi:
         """Send multiple commands in a single RAW payload."""
         return await self._post(
             "&".join(f"{key}={value}" for key, value in commands.items())
+        )
+
+    async def start_countdown(self, seconds: int, *, power_on: bool = False) -> bool:
+        """Start the shutdown timer the way the official web UI does."""
+        if seconds <= 0 or seconds > MAX_COUNTDOWN_SECONDS:
+            return False
+        commands = {
+            "countdown_val": seconds,
+            "countdown_ctl": COUNTDOWN_RUNNING,
+            "auto_poweroff": 1,
+        }
+        if power_on:
+            commands["power"] = 1
+        return await self.send_multi_command(commands)
+
+    async def pause_countdown(self) -> bool:
+        """Pause the running shutdown timer."""
+        return await self.send_multi_command(
+            {"countdown_ctl": COUNTDOWN_PAUSED, "auto_poweroff": 1}
+        )
+
+    async def resume_countdown(self) -> bool:
+        """Resume a paused shutdown timer."""
+        return await self.send_multi_command(
+            {"countdown_ctl": COUNTDOWN_RUNNING, "auto_poweroff": 1}
+        )
+
+    async def stop_countdown(self) -> bool:
+        """Stop the shutdown timer."""
+        return await self.send_multi_command(
+            {"countdown_ctl": COUNTDOWN_STOPPED, "auto_poweroff": 0}
         )

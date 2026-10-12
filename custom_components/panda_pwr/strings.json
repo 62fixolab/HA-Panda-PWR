@@ -1,13 +1,111 @@
 {
   "config": {
     "step": {
-      "confirm": {
-        "description": "[%key:common::config_flow::description::confirm_setup%]"
+      "user": {
+        "title": "Panda PWR",
+        "description": "Enter the IP address of your Panda PWR. Reserve it in your router so it does not change.",
+        "data": {
+          "ip_address": "IP address"
+        },
+        "data_description": {
+          "ip_address": "The address shown on the Panda PWR web page, for example 192.168.1.50."
+        }
+      },
+      "reconfigure": {
+        "title": "Change IP address",
+        "description": "Point the integration at the new IP address of the same Panda PWR. Entities and their history are kept.",
+        "data": {
+          "ip_address": "IP address"
+        },
+        "data_description": {
+          "ip_address": "The address shown on the Panda PWR web page, for example 192.168.1.50."
+        }
       }
     },
+    "error": {
+      "cannot_connect": "Could not connect to the Panda PWR. Check the IP address and that it is on the same network."
+    },
     "abort": {
-      "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]",
-      "no_devices_found": "[%key:common::config_flow::abort::no_devices_found%]"
+      "already_configured": "This Panda PWR is already configured.",
+      "wrong_device": "That IP address belongs to a different Panda PWR.",
+      "reconfigure_successful": "The IP address was updated."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "power_state": {
+        "name": "Power state"
+      },
+      "usb_state": {
+        "name": "USB state"
+      }
+    },
+    "button": {
+      "pause_shutdown_timer": {
+        "name": "Pause shutdown timer"
+      },
+      "resume_shutdown_timer": {
+        "name": "Resume shutdown timer"
+      },
+      "energy_usage_reset_button": {
+        "name": "Reset energy usage"
+      },
+      "factory_reset_button": {
+        "name": "Factory reset"
+      }
+    },
+    "number": {
+      "countdown_time": {
+        "name": "Countdown time"
+      }
+    },
+    "sensor": {
+      "countdown_state": {
+        "name": "Countdown state",
+        "state": {
+          "stopped": "Stopped",
+          "running": "Running",
+          "paused_by_panda_touch": "Paused by Panda Touch",
+          "paused": "Paused"
+        }
+      },
+      "auto_poweroff": {
+        "name": "Auto power-off state"
+      },
+      "countdown": {
+        "name": "Countdown"
+      },
+      "voltage": {
+        "name": "Voltage"
+      },
+      "current": {
+        "name": "Current"
+      },
+      "power": {
+        "name": "Power"
+      },
+      "energy_usage": {
+        "name": "Energy usage"
+      }
+    },
+    "switch": {
+      "power_switch": {
+        "name": "Power switch"
+      },
+      "usb_switch": {
+        "name": "USB switch"
+      },
+      "shutdown_timer": {
+        "name": "Shutdown timer"
+      },
+      "auto_poweroff_switch": {
+        "name": "Auto power-off"
+      }
+    }
+  },
+  "exceptions": {
+    "confirm_press": {
+      "message": "Press {name} again within {seconds} seconds to confirm."
     }
   }
 }
