@@ -38,7 +38,7 @@ class EnergyUsageResetButton(PandaPWRButton):
         """Initialize the energy usage reset button."""
         super().__init__(coordinator)
         self._attr_name = "Reset Energy Usage"
-        self._attr_unique_id = "pandapwr_energy_usage_reset_button"
+        self._attr_unique_id = f"{self._device_id}_energy_usage_reset_button"
 
     async def async_press(self) -> None:
         """Reset the energy usage statistics."""
@@ -55,7 +55,7 @@ class FactoryResetButton(PandaPWRButton):
         """Initialize the factory reset button."""
         super().__init__(coordinator)
         self._attr_name = "Factory Reset"
-        self._attr_unique_id = "pandapwr_factory_reset_button"
+        self._attr_unique_id = f"{self._device_id}_factory_reset_button"
 
     async def async_press(self) -> None:
         """Reset the factory settings."""
