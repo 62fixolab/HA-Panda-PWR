@@ -10,6 +10,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    ignore:
-      # Dependabot should not update Home Assistant as that should match the homeassistant key in hacs.json
-      - dependency-name: "homeassistant"
+    groups:
+      # pytest-homeassistant-custom-component pins an exact Home Assistant
+      # release, so both must move together. The oldest supported release is
+      # pinned separately in tests/requirements_min.txt to match hacs.json.
+      home-assistant:
+        patterns:
+          - "homeassistant"
+          - "pytest-homeassistant-custom-component"
