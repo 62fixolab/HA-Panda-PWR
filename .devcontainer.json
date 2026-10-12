@@ -1,6 +1,6 @@
 {
   "name": "62fixolab/panda_pwr",
-  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "image": "mcr.microsoft.com/devcontainers/python:3.14",
   "postCreateCommand": "scripts/setup.sh",
   "forwardPorts": [8123],
   "portsAttributes": {
