@@ -1,91 +1,49 @@
 # Copyright (c) 2026 FixoLab
 """Number platform for PandaPWR integration in Home Assistant."""
 
-from typing import Any
-
-from homeassistant.components.number import NumberEntity
+from homeassistant.components.number import (
+    NumberDeviceClass,
+    NumberEntity,
+    NumberMode,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, MAX_COUNTDOWN_SECONDS
+from .coordinator import PandaPWRCoordinator, PandaPWREntity
 
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the number sensor platform from a config entry."""
-    api = hass.data[DOMAIN][entry.entry_id]
-    device_id = f"pandapwr_{entry.data['ip_address']}"
-    async_add_entities(
-        [PandaPWRCountdownTimer(api, entry, device_id)],
-        update_before_add=True,
-    )
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+    async_add_entities([PandaPWRCountdownTimer(coordinator)])
 
 
-class PandaPWRNumber(NumberEntity):
-    """Base class for PandaPWR numbers."""
+class PandaPWRCountdownTimer(PandaPWREntity, NumberEntity):
+    """Countdown timer of a PandaPWR device, in seconds."""
 
-    def __init__(
-        self,
-        api: Any,
-        entry: ConfigEntry,
-        device_id: str,
-        number_info: dict,
-    ) -> None:
-        """Initialize the sensor with common attributes."""
-        self._api = api
-        self._entry = entry
-        self._attr_name = number_info.get("name")
-        self._attr_unique_id = f"{device_id}_{number_info['unique_id_suffix']}"
-        self._attr_native_value = None
-        self._attr_native_unit_of_measurement = number_info.get(
-            "native_unit_of_measurement"
-        )
-        self._attr_device_class = number_info.get("device_class")
-        self._attr_state_class = number_info.get("state_class")
-        self._device_id = device_id
-
-    async def async_update(self) -> None:
-        """Fetch latest state data from the device."""
-        data = await self._api.get_data()
-        self.process_data(data)
+    def __init__(self, coordinator: PandaPWRCoordinator) -> None:
+        """Initialize the number."""
+        super().__init__(coordinator)
+        self._attr_name = "Countdown Time"
+        self._attr_unique_id = f"{self._device_id}_countdown_time"
+        self._attr_native_unit_of_measurement = "s"
+        self._attr_device_class = NumberDeviceClass.DURATION
+        self._attr_native_max_value = MAX_COUNTDOWN_SECONDS
+        self._attr_mode = NumberMode.BOX
 
     @property
-    def device_info(self) -> dict:
-        """Return device information to group in the UI."""
-        return {
-            "identifiers": {(DOMAIN, self._device_id)},
-            "name": "Panda PWR",
-            "manufacturer": "Panda",
-            "model": "PWR Device",
-            "sw_version": "1.0",
-        }
-
-    def process_data(self, data: dict) -> None:
-        """Process data received from the API."""
-        raise NotImplementedError
-
-
-class PandaPWRCountdownTimer(PandaPWRNumber):
-    """PandaPWRCountdownTimer."""
-
-    def __init__(self, api: Any, entry: ConfigEntry, device_id: str) -> None:
-        """Initialize the number."""
-        number_info = {
-            "name": "Countdown Time",
-            "unique_id_suffix": "countdown_time",
-            "native_unit_of_measurement": "s",
-            "device_class": "DURATION",
-        }
-        super().__init__(api, entry, device_id, number_info)
-        self._attr_native_max_value = MAX_COUNTDOWN_SECONDS
-        self._attr_mode = "box"
+    def native_value(self) -> float | None:
+        """Return the countdown reported by the device in the last poll."""
+        return self.coordinator.data.get("countdown")
 
     async def async_set_native_value(self, value: float) -> None:
-        """Update the current value."""
-        await self._api.set_countdown_timer(int(value))
-
-    def process_data(self, data: dict) -> None:
-        """Process data received from the API."""
-        self._attr_native_value = data.get("countdown")
+        """Send the new countdown to the device."""
+        if not await self._api.set_countdown_timer(int(value)):
+            msg = "Panda PWR did not accept the countdown change"
+            raise HomeAssistantError(msg)
+        self.coordinator.async_apply_write({"countdown": int(value)})

@@ -3,6 +3,7 @@
 
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import PandaPWRApi
 from .const import DOMAIN
@@ -20,7 +21,7 @@ class PandaPWRConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if user_input:
             ip_address = user_input["ip_address"]
-            api = PandaPWRApi(ip_address)
+            api = PandaPWRApi(async_get_clientsession(self.hass), ip_address)
             if await api.test_connection():
                 return self.async_create_entry(title="Panda PWR", data=user_input)
             errors["base"] = "cannot_connect"
