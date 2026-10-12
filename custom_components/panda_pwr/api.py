@@ -84,6 +84,9 @@ class PandaPWRApi:
         1 for start
         2 for pause by Panda Touch (reserved)
         3 for pause by web
+
+        The device only counts down while auto power-off is enabled, so start
+        the timer together with auto_poweroff=1 (see send_multi_command).
         """
         if state not in range(4):
             return False
