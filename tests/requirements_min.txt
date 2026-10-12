@@ -1,5 +1,5 @@
 # Oldest Home Assistant release supported (matches "homeassistant" in hacs.json).
-# Kept outside the repository root so Dependabot leaves these pins alone.
+# Excluded from Dependabot (see .github/dependabot.yml): change these pins by hand.
 homeassistant==2024.11.1
 pytest-homeassistant-custom-component==0.13.182
 # Releases newer than the ones Home Assistant 2024.11 shipped with break its tests:

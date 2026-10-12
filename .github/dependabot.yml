@@ -10,10 +10,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # Oldest supported Home Assistant and the packages its tests need; these
+    # pins must match hacs.json, so they are only changed by hand.
+    exclude-paths:
+      - "tests/requirements_min.txt"
     groups:
       # pytest-homeassistant-custom-component pins an exact Home Assistant
-      # release, so both must move together. The oldest supported release is
-      # pinned separately in tests/requirements_min.txt to match hacs.json.
+      # release, so both must move together.
       home-assistant:
         patterns:
           - "homeassistant"
