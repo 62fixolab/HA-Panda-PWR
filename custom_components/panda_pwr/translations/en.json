@@ -102,5 +102,10 @@
         "name": "Auto power-off"
       }
     }
+  },
+  "exceptions": {
+    "confirm_press": {
+      "message": "Press {name} again within {seconds} seconds to confirm."
+    }
   }
 }

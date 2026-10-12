@@ -4,6 +4,7 @@
 from datetime import timedelta
 
 import pytest
+from freezegun.api import FrozenDateTimeFactory
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
@@ -179,10 +180,8 @@ async def test_auto_poweroff_switch(hass: HomeAssistant, device: FakePandaPWR) -
     assert device.posts[-1] == "auto_poweroff=0"
 
 
-async def test_destructive_buttons_when_enabled(
-    hass: HomeAssistant, device: FakePandaPWR
-) -> None:
-    """Once enabled, the reset buttons send the official commands."""
+async def enable_destructive_buttons(hass: HomeAssistant, device: FakePandaPWR) -> None:
+    """Set up the device with both reset buttons enabled."""
     entry = make_entry(device)
     await setup_entry(hass, entry)
     registry = er.async_get(hass)
@@ -193,19 +192,57 @@ async def test_destructive_buttons_when_enabled(
     assert await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
 
-    await call(
-        hass,
-        "button",
-        "press",
-        entity_id(hass, device, "button", "energy_usage_reset_button"),
-    )
-    assert device.posts[-1] == "reset_usage=1"
+
+@pytest.mark.parametrize(
+    ("key", "command"),
+    [
+        ("energy_usage_reset_button", "reset_usage=1"),
+        ("factory_reset_button", "factory=1"),
+    ],
+)
+async def test_destructive_buttons_need_confirmation(
+    hass: HomeAssistant, device: FakePandaPWR, key: str, command: str
+) -> None:
+    """The first press only asks for confirmation; the second one acts."""
+    await enable_destructive_buttons(hass, device)
+    button = entity_id(hass, device, "button", key)
+
+    with pytest.raises(ServiceValidationError) as err:
+        await call(hass, "button", "press", button)
+    assert err.value.translation_key == "confirm_press"
+    assert err.value.translation_placeholders["seconds"] == "10"
+    assert command not in device.posts
+
+    await call(hass, "button", "press", button)
+    assert device.posts[-1] == command
+
+    # Confirmed presses do not carry over: the next reset asks again.
+    with pytest.raises(ServiceValidationError):
+        await call(hass, "button", "press", button)
+    assert device.posts.count(command) == 1
+
+
+async def test_energy_reset_updates_sensor(
+    hass: HomeAssistant, device: FakePandaPWR
+) -> None:
+    """A confirmed energy reset shows zero right away."""
+    await enable_destructive_buttons(hass, device)
+    button = entity_id(hass, device, "button", "energy_usage_reset_button")
+    with pytest.raises(ServiceValidationError):
+        await call(hass, "button", "press", button)
+    await call(hass, "button", "press", button)
     assert state(hass, device, "sensor", "energy_usage") == "0.0"
 
-    await call(
-        hass,
-        "button",
-        "press",
-        entity_id(hass, device, "button", "factory_reset_button"),
-    )
-    assert device.posts[-1] == "factory=1"
+
+async def test_confirmation_expires(
+    hass: HomeAssistant, device: FakePandaPWR, freezer: FrozenDateTimeFactory
+) -> None:
+    """A second press after the 10 second window asks for confirmation again."""
+    await enable_destructive_buttons(hass, device)
+    button = entity_id(hass, device, "button", "factory_reset_button")
+    with pytest.raises(ServiceValidationError):
+        await call(hass, "button", "press", button)
+    freezer.tick(timedelta(seconds=11))
+    with pytest.raises(ServiceValidationError):
+        await call(hass, "button", "press", button)
+    assert "factory=1" not in device.posts

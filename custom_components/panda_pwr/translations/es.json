@@ -102,5 +102,10 @@
         "name": "Apagado automático"
       }
     }
+  },
+  "exceptions": {
+    "confirm_press": {
+      "message": "Pulsa {name} otra vez antes de {seconds} segundos para confirmar."
+    }
   }
 }
