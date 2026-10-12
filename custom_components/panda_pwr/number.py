@@ -46,4 +46,4 @@ class PandaPWRCountdownTimer(PandaPWREntity, NumberEntity):
         if not await self._api.set_countdown_timer(int(value)):
             msg = "Panda PWR did not accept the countdown change"
             raise HomeAssistantError(msg)
-        await self.coordinator.async_request_refresh()
+        self.coordinator.async_apply_write({"countdown": int(value)})

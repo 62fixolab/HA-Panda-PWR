@@ -45,7 +45,7 @@ class EnergyUsageResetButton(PandaPWRButton):
         if not await self._api.reset_energy_usage():
             msg = "Panda PWR did not accept the energy usage reset"
             raise HomeAssistantError(msg)
-        await self.coordinator.async_request_refresh()
+        self.coordinator.async_apply_write({"ele": 0})
 
 
 class FactoryResetButton(PandaPWRButton):

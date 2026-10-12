@@ -43,13 +43,11 @@ class PandaPWRSwitch(PandaPWREntity, SwitchEntity):
         raise NotImplementedError
 
     async def _async_set(self, state: int) -> None:
-        """Send the new state and refresh so every entity reflects it."""
+        """Send the new state and show it on every entity of the device."""
         if not await self._setter()(state):
             msg = f"Panda PWR did not accept the {self.name} change"
             raise HomeAssistantError(msg)
-        self.coordinator.data[self._data_key] = state
-        self.async_write_ha_state()
-        await self.coordinator.async_request_refresh()
+        self.coordinator.async_apply_write({self._data_key: state})
 
     async def async_turn_on(self, **_: Any) -> None:
         """Turn on the output."""
